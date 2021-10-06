@@ -1,0 +1,47 @@
+from random import randint
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import timeit
+
+tamlista = [1000, 2000, 3000, 4000, 5000, 8000, 11000, 15000]
+
+def gerarLista(tam):
+    lista = []
+    while len(lista) < tam:
+        z = randint(1,1*tam)
+        if z not in lista: lista.append(z)
+    return lista
+
+def bubbleSort(V):  
+  for j in range(0,len(V)):
+    for i in range(0,len(V)-1):
+      if V[i]>V[i+1]:
+        aux = V[i+1]
+        V[i+1] = V[i]
+        V[i] = aux
+      
+
+mpl.use('Agg')
+def desenhaGrafico(x,y,z):    
+    fig = plt.figure(figsize=(10,8))
+    ax = fig.add_subplot(111)
+    ax.plot(x,y, label = "Melhor Tempo")
+    ax.plot(x,z, label = "Pior Tempo")    
+    ax.legend(bbox_to_anchor=(1, 1),bbox_transform=plt.gcf().transFigure)
+    plt.xlabel('Tamanho')
+    plt.ylabel('tempo')      
+    fig.savefig('graph.png')
+
+Tempo_Melhor = []
+Tempo_Pior = []
+Tempo_Medio = []
+
+for i in tamlista:
+  medio = gerarLista(i)
+  melhor = sorted(medio)
+  pior = sorted(medio, reverse=True)
+  Tempo_Melhor.append(timeit.timeit("bubbleSort({})".format(melhor),setup="from __main__ import bubbleSort",number=1))
+  Tempo_Pior.append(timeit.timeit("bubbleSort({})".format(pior),setup="from __main__ import bubbleSort",number=1))
+  #Tempo_Medio.append(timeit.timeit("bubbleSort({})".format(medio),setup="from __main__ import bubbleSort",number=1))
+
+desenhaGrafico(tamlista,Tempo_Melhor,Tempo_Pior)
